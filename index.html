@@ -844,13 +844,29 @@
 
         .input-panel {
             display: flex;
+            align-items: center;
             gap: 0.8rem;
             background: white;
-            padding: 0.5rem;
+            padding: 0.4rem 0.6rem;
             border: 2px solid rgba(79, 70, 229, 0.12);
             border-radius: var(--radius-md);
             box-shadow: 0 4px 10px rgba(0,0,0,0.02);
             transition: var(--transition);
+        }
+
+        .input-panel .btn {
+            padding: 0.6rem 1.2rem;
+            font-size: 1rem;
+            border-radius: var(--radius-sm);
+            white-space: nowrap;
+            flex-shrink: 0;
+            transform: none !important;
+            box-shadow: none !important;
+        }
+
+        .input-panel .btn:hover {
+            transform: none !important;
+            box-shadow: none !important;
         }
 
         .input-panel:focus-within {
@@ -1520,7 +1536,7 @@
 
             <div class="input-panel" id="game-spelling-box" style="display: none;">
                 <input type="text" class="spelling-input" id="spelling-text-input" placeholder="영어 철자를 입력하세요..." autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" onkeydown="handleInputKeydown(event)">
-                <button class="btn btn-primary" onclick="submitSpellingAnswer()" style="padding: 0.7rem 1.4rem; white-space: nowrap; flex-shrink: 0;">
+                <button class="btn btn-primary" onclick="submitSpellingAnswer()">
                     입력
                 </button>
             </div>
