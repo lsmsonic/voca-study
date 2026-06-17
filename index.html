@@ -1491,9 +1491,9 @@
                 <div class="timer-bar" id="game-timer-bar"></div>
             </div>
 
-            <div style="display: flex; justify-content: center; gap: 0.5rem; margin-top: -0.5rem;">
-                <button class="control-btn" id="quiz-tts-btn" onclick="triggerQuizSpeech()" title="영어 단어 발음 듣기" style="border-radius: 50%;">
-                    🔊
+            <div style="display: flex; justify-content: center; align-items: center; gap: 0.8rem; margin-top: -0.5rem;">
+                <button class="btn btn-secondary" id="quiz-tts-btn" onclick="triggerQuizSpeech()" title="발음 힌트 듣기" style="padding: 0.5rem 1rem; font-size: 0.9rem; font-weight: 700; border-radius: var(--radius-sm); border: 2px solid rgba(79, 70, 229, 0.25); white-space: nowrap; flex-shrink: 0;">
+                    💡 Tip! (발음 듣기)
                 </button>
                 <span id="quiz-pos-badge" class="card-pos" style="margin-bottom: 0; display: none;"></span>
             </div>
@@ -1520,7 +1520,7 @@
 
             <div class="input-panel" id="game-spelling-box" style="display: none;">
                 <input type="text" class="spelling-input" id="spelling-text-input" placeholder="영어 철자를 입력하세요..." autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" onkeydown="handleInputKeydown(event)">
-                <button class="btn btn-primary" onclick="submitSpellingAnswer()" style="padding: 0.7rem 1.4rem;">
+                <button class="btn btn-primary" onclick="submitSpellingAnswer()" style="padding: 0.7rem 1.4rem; white-space: nowrap; flex-shrink: 0;">
                     입력
                 </button>
             </div>
@@ -2531,10 +2531,6 @@
             } else {
                 document.getElementById('game-timer-container').style.display = 'none';
             }
-
-            setTimeout(() => {
-                playWordPronunciation(item.word);
-            }, 250);
         }
 
         function triggerQuizSpeech() {
