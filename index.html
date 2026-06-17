@@ -1136,6 +1136,67 @@
             justify-content: flex-end;
             gap: 0.8rem;
         }
+
+        /* Responsive Grid & Switch */
+        .grid-two-cols {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.2rem;
+        }
+
+        @media (max-width: 600px) {
+            .grid-two-cols {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 44px;
+            height: 24px;
+            flex-shrink: 0;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #cbd5e1;
+            transition: .3s;
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        }
+
+        input:checked + .slider {
+            background-color: var(--primary);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(20px);
+        }
     </style>
 </head>
 <body>
@@ -1274,7 +1335,7 @@
                 <p>단어 카드로 먼저 공부하거나, 곧바로 단어 시험(퀴즈)을 치를 수 있습니다.</p>
             </div>
 
-            <div class="settings-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem;">
+            <div class="settings-row grid-two-cols">
                 <div class="form-group">
                     <label for="setup-quiz-count" style="font-weight: 700; font-size: 0.95rem; margin-bottom: 0.4rem; display: block;">문항/단어 수</label>
                     <select id="setup-quiz-count" class="select-input" style="width: 100%; padding: 0.8rem 1rem; border: 2px solid #e2e8f0; border-radius: var(--radius-sm); outline: none;">
@@ -1297,7 +1358,7 @@
                         </div>
                         <label class="switch" onclick="event.stopPropagation()">
                             <input type="checkbox" id="timer-toggle-cb" onchange="syncTimerToggleState()">
-                            <span class="slider" style="position: relative; display: inline-block; width: 44px; height: 24px; background-color: #cbd5e1; border-radius: 24px; transition: .3s; cursor: pointer;"></span>
+                            <span class="slider"></span>
                         </label>
                     </div>
                 </div>
@@ -1305,7 +1366,7 @@
 
             <div style="border-top: 1px dashed rgba(0,0,0,0.1); padding-top: 1.5rem; display: flex; flex-direction: column; gap: 1rem;">
                 <h3 style="font-size: 1.1rem; color: var(--primary-dark); font-weight: 700;">학습/퀴즈 코스 선택</h3>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem;">
+                <div class="grid-two-cols">
                     <button class="btn btn-secondary" onclick="startStudyMode()" style="flex-direction: column; padding: 1.5rem 1rem; border-color: var(--primary-light); background: rgba(79, 70, 229, 0.02); height: 100px;">
                         <span style="font-size: 1.4rem;">📖</span>
                         <span style="font-size: 1.05rem; font-weight: 700; color: var(--primary-dark);">플래시 카드 학습 모드</span>
@@ -2244,12 +2305,19 @@
         function saveTableToState() {
             const rows = document.querySelectorAll('#word-table-body tr');
             const list = [];
-            rows.forEach(row => {
+            rows.forEach((row, idx) => {
                 const w = row.querySelector('.word-input')?.value.trim();
                 const p = row.querySelector('.pos-input')?.value.trim() || 'n.';
                 const m = row.querySelector('.meaning-input')?.value.trim();
                 if (w || m) {
-                    list.push({ word: w, partOfSpeech: p, meaning: m, definition: 'Saved vocabulary.', example: 'No example.' });
+                    const original = words[idx] || {};
+                    list.push({
+                        word: w,
+                        partOfSpeech: p,
+                        meaning: m,
+                        definition: original.definition || 'Saved vocabulary.',
+                        example: original.example || 'No example.'
+                    });
                 }
             });
             words = list;
@@ -2257,7 +2325,19 @@
 
         function saveRawToState() {
             const text = document.getElementById('raw-text-input').value;
-            words = parseTextToWords(text);
+            const newWords = parseTextToWords(text);
+            const oldWords = [...words];
+            words = newWords.map(nw => {
+                const existing = oldWords.find(ow => ow.word && ow.word.trim().toLowerCase() === nw.word.trim().toLowerCase());
+                if (existing) {
+                    return {
+                        ...nw,
+                        definition: existing.definition || nw.definition,
+                        example: existing.example || nw.example
+                    };
+                }
+                return nw;
+            });
         }
 
         function proceedToSetup() {
